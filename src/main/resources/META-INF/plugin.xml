@@ -1,0 +1,40 @@
+<idea-plugin>
+    <id>com.github.re7r.phpColorCast</id>
+    <name>PHP Color Cast</name>
+    <category>Code tools</category>
+    <vendor url="https://github.com/re7r">Re7r</vendor>
+    <description><![CDATA[
+        <h3>Customize <font color="#FFCC66">c</font><font color="#FF9966">o</font><font color="#FFFF66">l</font><font color="#97E36E">o</font><font color="#CC99FF">r</font><font color="#66FF99">s</font> for PHP types.</h3>
+        Highlight specified classes, interfaces, enums,<br>
+        and all other PHP types with your own colors.<br>
+
+        <h3>Usage</h3>
+        Set colors for specific types in the plugin settings.<br>
+        After applying, your code will be highlighted:
+        <ul>
+            <li>Property declarations (<b><code><font color="#CF8E6D">public</font> CustomType <font color="#97E36E">$property</font></code></b>)</li>
+            <li>Property references (<b><code><font color="#9876AA">$object</font>-&gt;<font color="#97E36E">property</font></code></b>)</li>
+            <li>Variables (<b><code><font color="#97E36E">$variable</font></code></b>)</li>
+        </ul>
+
+        <h3>Settings</h3>
+        Control all (<b>type</b>: <b>color</b>) mappings at:<br>
+        <b><i>File → Settings → Editor →</i> PHP Color Cast</b>
+
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.jetbrains.php</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <annotator language="PHP" implementationClass="com.github.re7r.phpColorCast.annotators.TypeColorAnnotator"/>
+        <projectConfigurable
+                parentId="editor"
+                bundle="messages.PHPColorCastBundle"
+                id="com.github.re7r.phpColorCast.configurable"
+                key="com.github.re7r.phpColorCast.configurable.name"
+                instance="com.github.re7r.phpColorCast.PHPColorCastConfigurable"
+        />
+    </extensions>
+</idea-plugin>
