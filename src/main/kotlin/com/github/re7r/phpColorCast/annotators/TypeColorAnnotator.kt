@@ -74,6 +74,16 @@ class TypeColorAnnotator : Annotator, DumbAware {
                     colorize(holder, name.textRange, typeColor)
                 }
             }
+
+            state.variables && element is Parameter -> {
+                if (!state.properties || !element.isPromotedField) {
+                    val name = element.nameNode ?: return
+                    val typeColor = checkType(element, state.types)
+                    if (typeColor != null) {
+                        colorize(holder, name.textRange, typeColor)
+                    }
+                }
+            }
         }
     }
 
@@ -124,9 +134,9 @@ class TypeColorAnnotator : Annotator, DumbAware {
         val phpType: PhpType = when (element) {
             is Field -> element.type
             is Variable -> (element as? PhpTypedElement)?.type ?: PhpType.EMPTY
+            is Parameter -> (element as? PhpTypedElement)?.type ?: PhpType.EMPTY
             else -> PhpType.EMPTY
         }
-
         if (phpType.isEmpty) return null
 
         val index = PhpIndex.getInstance(element.project)

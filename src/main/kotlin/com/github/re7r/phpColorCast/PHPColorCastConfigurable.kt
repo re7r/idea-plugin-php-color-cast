@@ -33,7 +33,6 @@ class PHPColorCastConfigurable(private val project: Project) : SearchableConfigu
 
         schemes = SchemesPanel(manager).apply {
             alignmentX = Component.LEFT_ALIGNMENT
-            maximumSize = Dimension(350, preferredSize.height)
             setSeparatorVisible(false)
 
             onSchemeChange { scheme ->
