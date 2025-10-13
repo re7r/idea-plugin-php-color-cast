@@ -11,7 +11,6 @@ import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBBox
 import java.awt.Component
-import java.awt.Dimension
 import javax.swing.BoxLayout
 import javax.swing.JComponent
 import javax.swing.JPanel
@@ -65,7 +64,7 @@ class PHPColorCastConfigurable(private val project: Project) : SearchableConfigu
         schemes!!.apply()
         settings!!.apply()
 
-        TypeColorAnnotator.ColorCache.clear()
+        TypeColorAnnotator.SharedState.clear()
         reopenAllPhpFiles(project)
     }
 
