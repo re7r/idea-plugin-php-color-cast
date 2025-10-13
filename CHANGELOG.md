@@ -1,4 +1,4 @@
-## [1.1.1] - 2025-10-13
+## [1.2.1] - 2025-10-13
 ### Added
 - PHPDoc variables support.
 
