@@ -25,10 +25,14 @@ import java.util.concurrent.ConcurrentHashMap
 
 class TypeColorAnnotator : Annotator, DumbAware {
     private data class TypeColor(val type: String, val color: String)
-
-    private val transparent = JBColor(Color(0, 0, 0, 0), Color(0, 0, 0, 0))
     private val typeCache = WeakHashMap<Field, TypeColor?>()
     private lateinit var state: State
+
+    private val transparent = JBColor.lazy {
+        val bg = EditorColorsManager.getInstance().globalScheme.defaultBackground
+        @Suppress("UseJBColor")
+        Color(bg.red, bg.green, bg.blue, 0)
+    }
 
     class ColorCache {
         companion object {
