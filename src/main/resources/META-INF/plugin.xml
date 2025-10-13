@@ -37,4 +37,13 @@
                 instance="com.github.re7r.phpColorCast.PHPColorCastConfigurable"
         />
     </extensions>
+    <change-notes>
+        <![CDATA[
+            <b>[1.2.0] - 2025-10-13</b><br><br>
+            <i>Added</i><br>
+            - PHPDoc variables support.<br><br>
+            <i>Fixed</i><br>
+            - Fixed background color being incorrect or distracting during project indexing or long background operations.
+        ]]>
+    </change-notes>
 </idea-plugin>
