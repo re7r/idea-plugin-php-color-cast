@@ -69,7 +69,10 @@ class TypeColorAnnotator : Annotator, DumbAware {
         when {
             state.references && element is FieldReference -> {
                 val name = element.nameNode ?: return
-                val field = element.resolveLocal().filterIsInstance<Field>().firstOrNull() ?: return
+                val field = element.resolveLocal().filterIsInstance<Field>().firstOrNull()
+                    ?: element.resolve() as? Field
+                    ?: return
+
                 val typeColor = cachedCheckType(field, state.types)
                 if (typeColor != null) {
                     colorize(holder, name.textRange, typeColor)
@@ -160,7 +163,7 @@ class TypeColorAnnotator : Annotator, DumbAware {
     private fun checkType(field: PsiElement, types: List<StateItem>): TypeColor? {
         val phpType: PhpType = when (field) {
             is Field -> field.type
-            is Variable -> (field as? PhpTypedElement)?.type ?: PhpType.EMPTY
+            is Variable -> ((field as? PhpTypedElement)?.type ?: PhpType.EMPTY).global(field.project)
             is Parameter -> (field as? PhpTypedElement)?.type ?: PhpType.EMPTY
             is PhpDocVariable -> (field.parent as? PhpDocTag)?.type ?: PhpType.EMPTY
             else -> PhpType.EMPTY
