@@ -1,3 +1,7 @@
+## [1.2.3] - 2025-10-28
+### Fixed
+- Fixed vars and fields highlight problems
+
 ## [1.2.2] - 2025-10-13
 ### Added
 - PHPDoc variables support.

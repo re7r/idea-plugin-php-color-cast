@@ -39,11 +39,9 @@
     </extensions>
     <change-notes>
         <![CDATA[
-            <b>[1.2.2] - 2025-10-13</b><br><br>
-            <i>Added</i><br>
-            - PHPDoc variables support.<br><br>
+            <b>[1.2.3] - 2025-10-28</b><br><br>
             <i>Fixed</i><br>
-            - Fixed background color being incorrect or distracting during project indexing or long background operations.
+            - Fixed vars and fields highlight problems
         ]]>
     </change-notes>
 </idea-plugin>
