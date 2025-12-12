@@ -173,8 +173,14 @@ class TypeColorAnnotator : Annotator, DumbAware {
 
         val index = PhpIndex.getInstance(field.project)
 
-        if (SharedState.cachedArrayType != null && PhpType.isArray(phpType) || phpType.types.any { it.endsWith("[]") }) {
-            return TypeColor(SharedState.cachedArrayType!!.path, SharedState.cachedArrayType!!.color)
+        if (
+            SharedState.cachedArrayType != null &&
+            (PhpType.isArray(phpType) || phpType.types.any { it.endsWith("[]") })
+        ) {
+            return TypeColor(
+                SharedState.cachedArrayType!!.path,
+                SharedState.cachedArrayType!!.color
+            )
         }
 
         val matchingType = types.find { stateType ->
