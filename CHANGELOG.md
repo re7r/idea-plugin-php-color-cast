@@ -1,3 +1,7 @@
+## [1.2.4] - 2025-12-12
+### Fixed
+- Fixed null pointer exception
+
 ## [1.2.3] - 2025-10-28
 ### Fixed
 - Fixed vars and fields highlight problems
