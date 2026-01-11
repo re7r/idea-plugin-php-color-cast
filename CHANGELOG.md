@@ -1,3 +1,7 @@
+## [1.2.5] - 2026-01-11
+### Fixed
+- Fixed cross project cache artifacts
+
 ## [1.2.4] - 2025-12-12
 ### Fixed
 - Fixed null pointer exception

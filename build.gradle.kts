@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.github.re7r"
-version = "1.2.4"
+version = "1.2.5"
 
 repositories {
     mavenCentral()
@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
     intellijPlatform {
-        phpstorm("2025.2")
+        phpstorm("2025.3")
         bundledPlugin("com.jetbrains.php")
     }
 }
@@ -26,14 +26,14 @@ intellijPlatform {
     pluginConfiguration {
         ideaVersion {
             sinceBuild = "242"
-            untilBuild = "261.*"
+            untilBuild = "271.*"
         }
     }
 
     pluginVerification {
         ides {
-            ide("PS", "2025.2") // PhpStorm
-            ide("IU", "2025.2") // IntelliJ IDEA Ultimate
+            ide("PS", "2025.3") // PhpStorm
+            ide("IU", "2025.3") // IntelliJ IDEA Ultimate
         }
     }
 }

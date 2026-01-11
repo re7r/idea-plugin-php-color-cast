@@ -39,9 +39,9 @@
     </extensions>
     <change-notes>
         <![CDATA[
-            <b>[1.2.4] - 2025-12-12</b><br><br>
+            <b>[1.2.5] - 2026-01-11</b><br><br>
             <i>Fixed</i><br>
-            - Fixed null pointer exception
+            - Fixed cross project cache artifacts
         ]]>
     </change-notes>
 </idea-plugin>
