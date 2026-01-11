@@ -25,7 +25,7 @@ class SettingsColorCellEditor(val model: SettingsTableModel) : AbstractCellEdito
         button.addActionListener {
             val initialColor = try { Color.decode(currentColorHex) } catch (_: Exception) { Color.decode(DEFAULT_COLOR_HEX) }
 
-            ColorChooserService.instance.showPopup(
+            ColorChooserService.getInstance().showPopup(
                 project = null,
                 showAlpha = false,
                 currentColor = initialColor,

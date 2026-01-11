@@ -1,6 +1,6 @@
 package com.github.re7r.phpColorCast
 
-import com.github.re7r.phpColorCast.annotators.TypeColorAnnotator
+import com.github.re7r.phpColorCast.annotators.TypeColorCache
 import com.github.re7r.phpColorCast.scheme.SchemesManager
 import com.github.re7r.phpColorCast.scheme.SchemesPanel
 import com.github.re7r.phpColorCast.settings.SettingsPanel
@@ -64,7 +64,7 @@ class PHPColorCastConfigurable(private val project: Project) : SearchableConfigu
         schemes!!.apply()
         settings!!.apply()
 
-        TypeColorAnnotator.SharedState.clear()
+        project.getService(TypeColorCache::class.java).clear()
         reopenAllPhpFiles(project)
     }
 

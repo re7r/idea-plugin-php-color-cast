@@ -23,7 +23,6 @@ import com.jetbrains.php.lang.psi.resolve.types.PhpType
 import java.awt.Color
 import java.awt.Font
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 
 class TypeColorAnnotator : Annotator, DumbAware {
     private data class TypeColor(val type: String, val color: String)
@@ -37,21 +36,9 @@ class TypeColorAnnotator : Annotator, DumbAware {
 
     private lateinit var state: State
 
-    class SharedState {
-        companion object {
-            var isInitialized = false
-            var cachedArrayType: StateItem? = null
-            val colorCache = ConcurrentHashMap<String, TextAttributesKey>()
-
-            fun clear() {
-                isInitialized = false
-                cachedArrayType = null
-                colorCache.clear()
-            }
-        }
-    }
-
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
+        val cache = element.project.getService(TypeColorCache::class.java)
+
         if (!::state.isInitialized) {
             state = element.project
                 .getService(SchemesManager::class.java)
@@ -59,9 +46,9 @@ class TypeColorAnnotator : Annotator, DumbAware {
                 .state
         }
 
-        if (!SharedState.isInitialized) {
-            SharedState.isInitialized = true
-            SharedState.cachedArrayType = state.types.find {
+        if (!cache.isInitialized) {
+            cache.isInitialized = true
+            cache.cachedArrayType = state.types.find {
                 normalizeTypePath(it.path) == "\\array"
             }
         }
@@ -75,7 +62,7 @@ class TypeColorAnnotator : Annotator, DumbAware {
 
                 val typeColor = cachedCheckType(field, state.types)
                 if (typeColor != null) {
-                    colorize(holder, name.textRange, typeColor)
+                    colorize(holder, name.textRange, typeColor, cache)
                 }
             }
 
@@ -83,7 +70,7 @@ class TypeColorAnnotator : Annotator, DumbAware {
                 val name = element.nameNode ?: return
                 val typeColor = cachedCheckType(element, state.types)
                 if (typeColor != null) {
-                    colorize(holder, name.textRange, typeColor)
+                    colorize(holder, name.textRange, typeColor, cache)
                 }
             }
 
@@ -92,7 +79,7 @@ class TypeColorAnnotator : Annotator, DumbAware {
                     val name = element.nameNode ?: return
                     if (name.text == "\$this") return
                     val typeColor = checkType(element, state.types)
-                    if (typeColor != null) colorize(holder, name.textRange, typeColor)
+                    if (typeColor != null) colorize(holder, name.textRange, typeColor, cache)
                     true
                 }
 
@@ -100,7 +87,7 @@ class TypeColorAnnotator : Annotator, DumbAware {
                     if (!state.properties || !element.isPromotedField) {
                         val name = element.nameNode ?: return
                         val typeColor = checkType(element, state.types)
-                        if (typeColor != null) colorize(holder, name.textRange, typeColor)
+                        if (typeColor != null) colorize(holder, name.textRange, typeColor, cache)
                     }
                     true
                 }
@@ -108,7 +95,7 @@ class TypeColorAnnotator : Annotator, DumbAware {
                 is PhpDocVariable -> {
                     val nameNode = element.firstChild?.node ?: return
                     val typeColor = checkType(element, state.types)
-                    if (typeColor != null) colorize(holder, nameNode.textRange, typeColor)
+                    if (typeColor != null) colorize(holder, nameNode.textRange, typeColor, cache)
                     true
                 }
 
@@ -117,15 +104,16 @@ class TypeColorAnnotator : Annotator, DumbAware {
         }
     }
 
-    private fun colorize(holder: AnnotationHolder, range: TextRange, typeColor: TypeColor) {
+    private fun colorize(holder: AnnotationHolder, range: TextRange, typeColor: TypeColor, cache: TypeColorCache) {
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
             .range(range)
-            .textAttributes(getColorKey(typeColor.type, typeColor.color))
+            .textAttributes(getColorKey(typeColor.type, typeColor.color, cache))
             .create()
     }
 
-    private fun getColorKey(type: String, hex: String): TextAttributesKey {
-        return SharedState.colorCache.computeIfAbsent(type) {
+    private fun getColorKey(type: String, hex: String, cache: TypeColorCache): TextAttributesKey {
+
+        return cache.colorCache.computeIfAbsent(type) {
             val colorInt = (hex.removePrefix("#").toLongOrNull(16) ?: 0x000000).toInt()
             val color = JBColor(Color(colorInt, false), Color(colorInt, false))
             val name = type.split("\\").joinToString(".") { part ->
@@ -161,6 +149,7 @@ class TypeColorAnnotator : Annotator, DumbAware {
     }
 
     private fun checkType(field: PsiElement, types: List<StateItem>): TypeColor? {
+
         val phpType: PhpType = when (field) {
             is Field -> field.type
             is Variable -> ((field as? PhpTypedElement)?.type ?: PhpType.EMPTY).global(field.project)
@@ -172,14 +161,15 @@ class TypeColorAnnotator : Annotator, DumbAware {
         if (phpType.isEmpty) return null
 
         val index = PhpIndex.getInstance(field.project)
+        val cache = field.project.getService(TypeColorCache::class.java)
 
         if (
-            SharedState.cachedArrayType != null &&
+            cache.cachedArrayType != null &&
             (PhpType.isArray(phpType) || phpType.types.any { it.endsWith("[]") })
         ) {
             return TypeColor(
-                SharedState.cachedArrayType!!.path,
-                SharedState.cachedArrayType!!.color
+                cache.cachedArrayType!!.path,
+                cache.cachedArrayType!!.color
             )
         }
 
